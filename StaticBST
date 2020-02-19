@@ -1,0 +1,121 @@
+#include <iostream>
+using namespace std;
+
+static int root[10]; //array containing BST elements
+static int lefts[10]; //array containing indices of the left child from respective roots
+static int rights[10]; //array containing indices of the right child from respective roots
+static bool loop; 
+static int i = 0;
+static int k = 0;
+
+//function initializes array of values 0
+void init(int size)
+{
+	loop = true;
+	for (static int i = 0; i <= size; i++)
+	{
+		root[i] = 0;
+		lefts[i] = 0;
+		rights[i] = 0;
+	}
+}
+//function inserts values into root array and checks whether its in the right or left subtree
+void insert(int n)
+{
+	i = 0;
+	while (true) {
+		if (root[0] == 0)
+		{
+			root[0] = n;
+			i = 0;
+			return;
+		}
+		if (n < root[i] && lefts[i] == 0)
+		{
+			k = 0;
+			while (root[k] != 0) { k++; }
+			root[k] = n;
+			for (static int t = 0; t < 10; t++)
+			{
+				if (lefts[t] == 0) { lefts[t] = k; break; }
+			}
+			k = 0;
+
+			i = 0;
+			return;
+		}
+		else if (n > root[i] && rights[i] == 0)
+		{
+			k = 0;
+
+			while (root[k] != 0) { k++; }
+			root[k] = n;
+			for (static int t = 0; t < 10; t++)
+			{
+				if (rights[t] == 0) { rights[t] = k; break; }
+			}
+			k = 0;
+
+			i = 0;
+			return;
+		}
+		else i++;
+	}
+}
+
+//finds passed through integer and prints the path of travel each time
+bool find(int f)
+{
+	static int l = 0;
+	cout << root[l] << " ";
+	//double while loop to replicate the go to label in fortran (recursion)
+	while (loop) {
+		while (true)
+		{
+			if (root[l] == f)
+			{
+				l = 0;
+				return true;
+			}
+			else if (f < root[l] && lefts[l] != 0) {
+				l = lefts[l];
+				cout << root[l] << " ";
+				break;
+			}
+			else if (f > root[l] && rights[l] != 0) {
+				l = rights[l];
+				cout << root[l] << " ";
+				break;
+			}
+			else { l = 0; return false; }
+		}
+	}
+}
+	void main() 
+	{
+		static int arr[] = { 6,9,3,7,1,8 };
+		static int size = 6;
+
+		init(6);
+
+		cout << "Printing the root array\n";
+		for (static int i = 0; i < size; i++) {
+			insert(arr[i]);
+			cout << root[i]<<" ";}
+		cout << endl << "Printing the index position of each left subtree" << endl;
+		for (static int i = 0; i < size; i++) {
+			cout << lefts[i] << " ";
+		}
+		cout << endl << "Printing the index position of each right subtree" << endl;
+		for (static int i = 0; i < size; i++) {
+			cout << rights[i] << " ";
+		}
+		cout << "\nFinding integer 7" << endl;
+		if (find(7)) { cout << "<- Found it" << endl; }
+		else cout << " x Not Found" << endl;
+
+		cout << "\nFinding integer 4" << endl;
+		if (find(4)) { cout << "<- Found" << endl; }
+		else cout << "x Not Found" << endl;
+
+	}
